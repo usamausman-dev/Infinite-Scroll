@@ -13,8 +13,8 @@ export default function Gallery() {
 
   useEffect(() => {
     axios.get(URL).then(res => {
-      setPhotos([...photos, ...res.data])
-      setLoader(true)
+      setPhotos([...photos, ...res.data]) 
+      setLoader(true) //invoke lower useeffect everytime when it gets updated
     }).catch(err => console.log(err))
 
   }, [pageNumber])
@@ -25,12 +25,15 @@ export default function Gallery() {
   useEffect(() => {
     if (loader) {
       const observer = new IntersectionObserver(entries => {
+
+        // Invoked when observer and ref will insersect 
         if (entries[0].isIntersecting) {
-          setPageNumber(pageNumber => pageNumber + 1)
+          setPageNumber(pageNumber => pageNumber + 1) // increase page number so that upper useEffect gets fire and new photos get added
         }
 
-      }, { threshold: 1 })
-      observer.observe(PageEnd.current)
+      }, { threshold: 1 }) //1 means that when 100% of the target is visible in screen
+
+      observer.observe(PageEnd.current) //Observing whether the observer instance has reached the refrence position
 
     }
 
@@ -55,6 +58,7 @@ export default function Gallery() {
           photos.map((photo, key) => <Cards key={key} data={photo} />)
         }
 
+        {/* ADDING ADDITIONAL LOADERS TO BALANCE THE UI  */}
 
         {
           photos.length % 4 == 0
@@ -66,7 +70,7 @@ export default function Gallery() {
 
 
 
-
+        {/* PAGE ENDING REF TO DETECT  */}
         <div
           ref={PageEnd}
           role="status"
